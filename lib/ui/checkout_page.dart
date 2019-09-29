@@ -1,3 +1,6 @@
+import 'package:agile_market/ui/contact_us_page.dart';
+import 'package:agile_market/ui/payment_add_pag.dart';
+import 'package:agile_market/ui/profile_page.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +12,7 @@ var random = Random.secure();
 final produtos = <Map<String, dynamic>>[
   {"codigo": "7899716311295", "nome_produto": "Pelicula iphone 7", "valor": 65.00},
   {"codigo": "7894900330014", "nome_produto": "Aquarius fresh", "valor": 3.50},
+  {"codigo": "7894900010015", "nome_produto": "Coca-cola Lata 350ml", "valor": 2.50},
 ];
 
 const MAX_PRODUTO = 10;
@@ -40,12 +44,14 @@ class _CheckoutState extends State<Checkout>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.blue),
         centerTitle: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white, //teste
         title: Text(
           'Checkout',
           style: TextStyle(color: Colors.blue),
         ),
+
         bottom: TabBar(
             indicatorSize: TabBarIndicatorSize.tab,
             unselectedLabelColor: Colors.blue,
@@ -59,9 +65,44 @@ class _CheckoutState extends State<Checkout>
                 text: "Produtos",
               ),
               Tab(
-                text: "Pagamentos",
+                text: "Metodo de Pagamento",
               )
             ]),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text("Felipe de Luca"),
+              accountEmail: Text("felipedelucanogueira@gmail.com"),
+              currentAccountPicture: CircleAvatar(),
+            ),
+            ListTile(
+              title: Text("Cadastro de Cartão",),
+              leading: Icon(Icons.credit_card),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));
+              },
+            ),ListTile(
+              title: Text("Editar Perfil"),
+              leading: Icon(Icons.person_outline),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
+              },
+            ),ListTile(
+              title: Text("Fale Conosco"),
+              leading: Icon(Icons.phone_in_talk),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ContactUs()));
+              },
+            ),ListTile(
+              title: Text("LogOut"),
+              leading: Icon(Icons.exit_to_app),
+            ),
+          ],
+        ),
+
+
       ),
       body: TabBarView(
         physics: NeverScrollableScrollPhysics(),
@@ -131,6 +172,7 @@ class _CheckoutState extends State<Checkout>
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
+
             padding: EdgeInsets.all(5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -139,7 +181,10 @@ class _CheckoutState extends State<Checkout>
               children: <Widget>[],
             ),
           ),
+
+
           Padding(
+
             padding: EdgeInsets.symmetric(horizontal: 25),
             child: Text(
               nome_prod,
@@ -173,6 +218,7 @@ class _CheckoutState extends State<Checkout>
 
   Widget Scan_Product() {
     return Container(
+      color: Colors.grey[100],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -182,9 +228,14 @@ class _CheckoutState extends State<Checkout>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(left: 10, top: 20, bottom: 10),
+                padding: EdgeInsets.only(left: 10, top: 15, bottom: 15),
                 child:
-                    Text("CARRINHO - ${meusprodutos.length} de $MAX_PRODUTO"),
+               Row(
+                 children: <Widget>[
+                   Icon(Icons.shopping_cart,color: Colors.blue,),
+                   Text("  CARRINHO - ${meusprodutos.length} de $MAX_PRODUTO",style: TextStyle(fontWeight: FontWeight.bold),),
+                 ],
+               )
               ),
             ],
           ),
