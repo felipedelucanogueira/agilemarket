@@ -13,6 +13,7 @@ final produtos = <Map<String, dynamic>>[
   {"codigo": "7899716311295", "nome_produto": "Pelicula iphone 7", "valor": 65.00},
   {"codigo": "7894900330014", "nome_produto": "Aquarius fresh", "valor": 3.50},
   {"codigo": "7894900010015", "nome_produto": "Coca-cola Lata 350ml", "valor": 2.50},
+  {"codigo": "190198407498", "nome_produto": "Iphone 7", "valor": 2000},
 ];
 
 const MAX_PRODUTO = 10;
