@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+
+import 'checkout_page.dart';
+
 
 class Login_Page extends StatefulWidget {
   @override
@@ -8,8 +13,16 @@ class Login_Page extends StatefulWidget {
 }
 
 class _Login_PageState extends State<Login_Page> {
+  final fbLogin = FacebookLogin();
+  final AuthCredential credential = FacebookAuthProvider.getCredential();
+
+
+
+
   @override
+
   Widget build(BuildContext context) {
+
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         backgroundColor: Color(0Xff7888F0),
@@ -71,7 +84,6 @@ class _Login_PageState extends State<Login_Page> {
                                           color: Colors.transparent,
                                           height: 32,
                                         ),
-
                                         TextField(
                                           decoration: InputDecoration(
                                               filled: true,
@@ -85,20 +97,64 @@ class _Login_PageState extends State<Login_Page> {
                                                     width: 1,
                                                     color: Colors.blue),
                                               )),
-                                        ),Divider(color: Colors.transparent,),
-
+                                        ),
+                                        Divider(
+                                          color: Colors.transparent,
+                                        ),
                                         RaisedButton(
-
                                           color: Colors.blue[50],
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
-                                              side: BorderSide(color: Colors.blue)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              side: BorderSide(
+                                                  color: Colors.blue)),
                                           onPressed: () {},
-                                          child: SizedBox(width: 100,child: Center(child: Text("Login",style: TextStyle(color: Colors.blue,fontSize: 20),),),),
-                                        ),],
+                                          child: SizedBox(
+                                            width: 100,
+                                            child: Center(
+                                              child: Text(
+                                                "Login",
+                                                style: TextStyle(
+                                                    color: Colors.blue,
+                                                    fontSize: 20),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   FacebookSignInButton(
-                                    onPressed: () {},
+
+
+
+
+                                    onPressed: ()  async {
+                                      final facebooklogin = FacebookLogin();
+                                      final result = await facebooklogin.logIn(['email','public_profile']);
+
+
+                                      switch(result.status){
+
+                                        case FacebookLoginStatus.loggedIn:
+                                          FirebaseAuth.instance.signInWithCredential(credential).then((signedInUser) async {
+                                            print('Logado como ${signedInUser.user}');
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => Checkout()));
+                                          });
+
+
+
+                                          break;
+                                        case FacebookLoginStatus.cancelledByUser:
+                                          // TODO: Handle this case.
+                                          break;
+                                        case FacebookLoginStatus.error:
+                                          // TODO: Handle this case.
+                                          break;
+                                      }
+
+
+                                    },
                                   ),
                                 ],
                               ),

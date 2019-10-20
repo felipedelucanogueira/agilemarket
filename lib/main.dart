@@ -1,3 +1,4 @@
+import 'package:agile_market/ui/checkout_page.dart';
 import 'package:agile_market/ui/login_page.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
