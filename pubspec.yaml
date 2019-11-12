@@ -28,9 +28,16 @@ dependencies:
   flare_flutter: ^1.5.4
   flare_splash_screen: ^2.1.2
   flutter_auth_buttons: ^0.5.0
-  firebase_auth: ^0.14.0+5
+  firebase_auth:
   flutter_facebook_login: ^3.0.0
-  http: ^0.12.0+2
+  authenticator: ^0.1.2
+  firebase:
+  cloud_firestore:
+  http:
+  credit_card: 0.1.6
+  flutter_open_whatsapp: ^0.1.2
+
+
 
 
 dev_dependencies:
@@ -53,6 +60,7 @@ flutter:
   assets:
      - assets/shopping-cart.flr
      - assets/Flow_background.flr
+     - assets/qrcode.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

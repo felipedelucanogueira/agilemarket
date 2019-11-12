@@ -1,8 +1,10 @@
+import 'package:authenticator/authenticator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'dart:convert';
 
 import 'checkout_page.dart';
 
@@ -14,10 +16,7 @@ class Login_Page extends StatefulWidget {
 
 class _Login_PageState extends State<Login_Page> {
   final fbLogin = FacebookLogin();
-  final AuthCredential credential = FacebookAuthProvider.getCredential();
-
-
-
+  var auth = Authenticator();
 
   @override
 
@@ -108,7 +107,9 @@ class _Login_PageState extends State<Login_Page> {
                                                   BorderRadius.circular(10),
                                               side: BorderSide(
                                                   color: Colors.blue)),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => Checkout()));
+                                          },
                                           child: SizedBox(
                                             width: 100,
                                             child: Center(
@@ -125,40 +126,35 @@ class _Login_PageState extends State<Login_Page> {
                                     ),
                                   ),
                                   FacebookSignInButton(
-
-
-
-
                                     onPressed: ()  async {
                                       final facebooklogin = FacebookLogin();
                                       final result = await facebooklogin.logIn(['email','public_profile']);
-
-
+                                      final FacebookAccessToken accessToken = result.accessToken;
+                                      AuthCredential credential = FacebookAuthProvider.getCredential(accessToken: accessToken.token);
                                       switch(result.status){
-
                                         case FacebookLoginStatus.loggedIn:
-                                          FirebaseAuth.instance.signInWithCredential(credential).then((signedInUser) async {
-                                            print('Logado como ${signedInUser.user}');
+                                          FirebaseAuth.instance.signInWithCredential(credential).then((signedInUser) {
+                                            print('Logado como ${signedInUser.user}',
+                                            );
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => Checkout()));
                                           });
-
-
-
                                           break;
                                         case FacebookLoginStatus.cancelledByUser:
-                                          // TODO: Handle this case.
+                                        // TODO: Handle this case.
                                           break;
                                         case FacebookLoginStatus.error:
-                                          // TODO: Handle this case.
+                                        // TODO: Handle this case.
                                           break;
                                       }
+
+
 
 
                                     },
                                   ),
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

@@ -1,20 +1,49 @@
-import 'package:agile_market/ui/contact_us_page.dart';
+import 'dart:io';
+
+
 import 'package:agile_market/ui/payment_add_pag.dart';
-import 'package:agile_market/ui/profile_page.dart';
+
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:credit_card/credit_card_form.dart';
+import 'package:credit_card/credit_card_model.dart';
+import 'package:credit_card/credit_card_widget.dart';
+import 'package:credit_card/flutter_credit_card.dart';
 import 'dart:math';
+
+import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 
 var random = Random.secure();
 
 final produtos = <Map<String, dynamic>>[
-  {"codigo": "7899716311295", "nome_produto": "Pelicula iphone 7", "valor": 65.00},
+  {
+    "codigo": "7899716311295",
+    "nome_produto": "Pelicula iphone 7",
+    "valor": 65.00
+  },
   {"codigo": "7894900330014", "nome_produto": "Aquarius fresh", "valor": 3.50},
-  {"codigo": "7894900010015", "nome_produto": "Coca-cola Lata 350ml", "valor": 2.50},
+  {
+    "codigo": "7894900010015",
+    "nome_produto": "Coca-cola Lata 350ml",
+    "valor": 2.50
+  },
   {"codigo": "190198407498", "nome_produto": "Iphone 7", "valor": 2000},
-  {"codigo": "7896806700076", "nome_produto": "Talco Barla 140g", "valor": 7.03},
+  {
+    "codigo": "7896806700076",
+    "nome_produto": "Talco Barla 140g",
+    "valor": 7.03
+  }, {
+    "codigo": "7891000061190",
+    "nome_produto": "Nescau 200g",
+    "valor": 5.00
+  },{
+    "codigo": "7891048038055",
+    "nome_produto": "Chá Dr.Oetker 10g",
+    "valor": 5.00
+  },
 ];
 
 const MAX_PRODUTO = 10;
@@ -29,6 +58,11 @@ class _CheckoutState extends State<Checkout>
     with SingleTickerProviderStateMixin {
   TabController tabController;
   String barcode = "";
+  String cardNumber = '';
+  String expiryDate = '';
+  String cardHolderName = '';
+  String cvvCode = '';
+  bool isCvvFocused = false;
 
   @override
   void initState() {
@@ -77,39 +111,51 @@ class _CheckoutState extends State<Checkout>
             UserAccountsDrawerHeader(
               accountName: Text("Felipe de Luca"),
               accountEmail: Text("felipedelucanogueira@gmail.com"),
-              currentAccountPicture: CircleAvatar(),
+              currentAccountPicture: Container(
+                height: 200.0,
+                width: 200.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(
+                        'https://graph.facebook.com/2656653767762160/picture'),
+                  ),
+                ),
+              ),
             ),
             ListTile(
-              title: Text("Cadastro de Cartão",),
+              title: Text(
+                "Cadastro de Cartão",
+              ),
               leading: Icon(Icons.credit_card),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Payment()));
               },
-            ),ListTile(
-              title: Text("Editar Perfil"),
-              leading: Icon(Icons.person_outline),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
-              },
-            ),ListTile(
+            ),
+            ListTile(
               title: Text("Fale Conosco"),
               leading: Icon(Icons.phone_in_talk),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ContactUs()));
+              onTap: () {
+                FlutterOpenWhatsapp.sendSingleMessage("5599982002450",
+                    "Olá Agile Market estou com Problema ao usar o app");
               },
-            ),ListTile(
+            ),
+            ListTile(
               title: Text("LogOut"),
               leading: Icon(Icons.exit_to_app),
+              onTap: () {
+                exit(0);
+              },
             ),
           ],
         ),
-
-
       ),
       body: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: tabController,
-        children: <Widget>[Scan_Product(), payment_metthod()],
+        children: <Widget>[Scan_Product(), payment_method()],
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
@@ -174,7 +220,6 @@ class _CheckoutState extends State<Checkout>
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-
             padding: EdgeInsets.all(5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -183,10 +228,7 @@ class _CheckoutState extends State<Checkout>
               children: <Widget>[],
             ),
           ),
-
-
           Padding(
-
             padding: EdgeInsets.symmetric(horizontal: 25),
             child: Text(
               nome_prod,
@@ -230,15 +272,19 @@ class _CheckoutState extends State<Checkout>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(left: 10, top: 15, bottom: 15),
-                child:
-               Row(
-                 children: <Widget>[
-                   Icon(Icons.shopping_cart,color: Colors.blue,),
-                   Text("  CARRINHO - ${meusprodutos.length} de $MAX_PRODUTO",style: TextStyle(fontWeight: FontWeight.bold),),
-                 ],
-               )
-              ),
+                  padding: EdgeInsets.only(left: 10, top: 15, bottom: 15),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.shopping_cart,
+                        color: Colors.blue,
+                      ),
+                      Text(
+                        "  CARRINHO - ${meusprodutos.length} de $MAX_PRODUTO",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )),
             ],
           ),
           Expanded(
@@ -313,7 +359,7 @@ class _CheckoutState extends State<Checkout>
           content: Container(
             height: 250,
             width: 250,
-            child: Image.asset("assets/qrcode.png"),
+            child: Image.asset('assets/qrcode.png'),
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
@@ -328,6 +374,42 @@ class _CheckoutState extends State<Checkout>
       },
     );
   }
+
+  Widget payment_method() {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Container(
+            child: CreditCardWidget(
+              cardNumber: '4512 3245 3654 8779',
+              expiryDate: '06/20',
+              cardHolderName: 'Daniel Soares',
+              cvvCode: cvvCode,
+              showBackView: isCvvFocused,
+              cardBgColor: Colors.black,
+              height: 175,
+              textStyle: TextStyle(color: Colors.yellowAccent),
+              width: MediaQuery.of(context).size.width,
+              animationDuration: Duration(milliseconds: 1000),
+            ),
+          ),
+          CreditCardWidget(
+            cardNumber: "5234 3753 6524 3834",
+            expiryDate: "02/21",
+            cardHolderName: "Felipe de Luca",
+            cvvCode: cvvCode,
+            showBackView: isCvvFocused,
+            cardBgColor: Colors.black,
+            height: 175,
+            textStyle: TextStyle(color: Colors.yellowAccent),
+            width: MediaQuery.of(context).size.width,
+            animationDuration: Duration(milliseconds: 1000),
+          ),
+        ],
+      ),
+    );
+  }
+
   //context ate aqui
 }
 
@@ -361,10 +443,6 @@ Widget subtotalWidget() {
       ],
     ),
   );
-}
-
-Widget payment_metthod() {
-  return Container();
 }
 
 double get _calcularSubtotal {
